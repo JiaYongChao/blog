@@ -48,7 +48,7 @@ public class LoginController {
     @LogAnnotation(module = "登录", operation = "登录")
     public Result login(@RequestBody User user) {
         Result r = new Result();
-        executeLogin(user.getAccount(), user.getPassword(),null, r);
+        executeLogin(user.getAccount(), user.getPassword(), r);
         return r;
     }
 
@@ -71,7 +71,7 @@ public class LoginController {
         Long userId = userService.saveUser(user);
 
         if (userId > 0) {
-            executeLogin(account, null, password,r);
+            executeLogin(account,  password,r);
         } else {
             r.setResultCode(ResultCode.USER_Register_ERROR);
         }
@@ -79,21 +79,13 @@ public class LoginController {
     }
 
 
-    private void executeLogin(String account, String enpassword,String password, Result r) {
+    private void executeLogin(String account,String password, Result r) {
         //密码加密
 
         try {
             Subject subject = SecurityUtils.getSubject();
-            String originalPassword="";
-            if(enpassword!=null){
-                // 解密
-                originalPassword= RSAUtils.decode(password,this.PRIVATE_SECRET_KEY);
-            }else{
-                originalPassword = password;
-            }
 
-
-            UsernamePasswordToken token = new UsernamePasswordToken(account, originalPassword);
+            UsernamePasswordToken token = new UsernamePasswordToken(account, password);
             subject.login(token);
 
             User currentUser = userService.getUserByAccount(account);
