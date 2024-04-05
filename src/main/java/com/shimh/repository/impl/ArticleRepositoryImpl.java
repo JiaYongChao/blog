@@ -73,7 +73,8 @@ public class ArticleRepositoryImpl implements ArticleWrapper {
         }
 
         if (null != article.getTitle() && !"".equals(article.getTitle())) {
-            hql.append(" and a.title like '%" + article.getTitle() + "%' ");
+
+            hql.append(" and a.title like:title");
         }
 
 
@@ -107,6 +108,12 @@ public class ArticleRepositoryImpl implements ArticleWrapper {
 
         if (null != article.getTagId()) {
             query.setParameter("tagId", article.getTagId());
+        }
+
+        if (null != article.getTitle() && !"".equals(article.getTitle())) {
+            // 设置参数
+            String title = "%"+article.getTitle()+"%";
+            query.setParameter("title", title);
         }
 
         if (null != article.getCategoryId()) {
